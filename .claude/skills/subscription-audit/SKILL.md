@@ -37,8 +37,10 @@ Check what's actually available rather than assuming. See
 - **Gmail** — works right now, no setup. Rocket Money alerts plus merchant
   receipts. Fastest start, but **blind to any merchant that doesn't email**,
   which is exactly how the Meta charge survived.
-- **A Chase CSV/QFX export** — if he's provided one, or can. This is the only
-  source that sees *everything*, including silent merchants. Run
+- **A Rocket Money CSV export** — the best source, and already covered by the
+  Premium plan he pays for. One file, every linked account, already
+  categorized. This is what to ask for when the goal is "find what I forgot
+  about". A Chase export is the fallback. Either way, run
   `scripts/find_recurring.py` on it.
 - **A Plaid MCP server** — if `mcp__plaid__*` tools exist in the session, use
   them; that's the automated version of the CSV.

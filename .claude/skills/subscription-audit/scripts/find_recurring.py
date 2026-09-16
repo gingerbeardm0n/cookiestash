@@ -19,7 +19,7 @@ from datetime import datetime
 
 # Chase headers vary by account type; these are the aliases seen in exports.
 DATE_KEYS = ("Transaction Date", "Posting Date", "Post Date", "Date")
-DESC_KEYS = ("Description",)
+DESC_KEYS = ("Description", "Name", "Merchant", "Payee")
 AMOUNT_KEYS = ("Amount",)
 
 # Cadence buckets: label -> (low, high) days between charges, and periods/year.
@@ -68,9 +68,18 @@ def parse_date(raw):
 
 
 def load(paths):
+    """Read exports into {merchant_key: [(date, amount, raw_description)]}.
+
+    Sign conventions differ between providers: Chase writes charges as negative,
+    while Rocket Money writes them as positive and income as negative. Guessing
+    wrong silently discards every charge and reports "no subscriptions", so the
+    convention is inferred per file from whichever sign is in the majority --
+    on any real statement, charges far outnumber deposits.
+    """
     charges = defaultdict(list)
     skipped = 0
     for path in paths:
+        rows = []
         with open(path, newline="", encoding="utf-8-sig") as fh:
             for row in csv.DictReader(fh):
                 row = {(k or "").strip(): (v or "").strip() for k, v in row.items()}
@@ -86,10 +95,19 @@ def load(paths):
                 except ValueError:
                     skipped += 1
                     continue
-                # Chase writes charges as negative; ignore credits and refunds.
-                if date is None or amount >= 0:
+                if date is None or amount == 0:
+                    skipped += 1
                     continue
-                charges[normalize(desc)].append((date, abs(amount), desc))
+                rows.append((date, amount, desc))
+
+        if not rows:
+            continue
+        negatives = sum(1 for _, a, _ in rows if a < 0)
+        charges_are_negative = negatives > len(rows) / 2
+        for date, amount, desc in rows:
+            if (amount < 0) != charges_are_negative:
+                continue  # a deposit or refund under this file's convention
+            charges[normalize(desc)].append((date, abs(amount), desc))
     return charges, skipped
 
 
@@ -200,4 +218,12 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Piping to head/less closes stdout early; exit quietly instead of dumping
+    # a BrokenPipeError traceback over the report.
+    try:
+        sys.exit(main())
+    except BrokenPipeError:
+        try:
+            sys.stdout.close()
+        finally:
+            sys.exit(0)

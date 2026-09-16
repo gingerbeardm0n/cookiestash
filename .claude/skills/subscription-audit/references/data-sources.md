@@ -30,25 +30,44 @@ Gmail for `meta.com`, `oculus.com`, `facebookmail.com` returns only 2021-22
 hardware order mail. A Gmail-only audit will miss silent merchants entirely.
 Chase statement emails don't help; they carry balances, not line items.
 
-## 2. Chase CSV export — the complete picture
+## 2. Rocket Money CSV export -- best source, already paid for
 
-Joel exports it; it takes about two minutes.
+Joel has Rocket Money Premium ($6/mo), and **data export is a Premium feature**
+he is already entitled to. Prefer this over the Chase export.
 
-chase.com → account → **More** → **Download account activity** → pick a date
-range → CSV. **Desktop site only** — the mobile app can't do this.
+rocketmoney.com -> sign in -> Transactions -> export. Rocket Money emails a
+**Download File** link, and that link only opens on a desktop or laptop.
 
-Limits: about 24 months and 1,000 rows. No structured export exists for older
-statements; those are PDF only.
+Three reasons this beats exporting from Chase directly:
 
-Two column layouts, both handled by `scripts/find_recurring.py`:
+- Every linked account lands in one file -- both Chase cards, checking, and
+  anything else he has connected. No merging exports by hand.
+- Transactions arrive already categorized.
+- It carries Rocket Money's own recurring-charge detection, which is the
+  analysis he is paying them for. Use it rather than re-deriving it.
+
+`scripts/find_recurring.py` reads whatever columns it finds via the date /
+description / amount aliases, so it handles this export too. If the layout has
+drifted and rows get skipped, read the header and adjust rather than guessing.
+
+## 3. Chase CSV export -- fallback
+
+Useful when the Rocket Money export is unavailable, or to check an account
+Rocket Money is not linked to.
+
+chase.com -> account -> **More** -> **Download account activity** -> pick a date
+range -> CSV. **Desktop site only** -- the mobile app cannot do this.
+
+Limits: about 24 months and 1,000 rows, per account, so multiple accounts mean
+multiple files. Pass them all to the script at once; it merges them. Older
+statements are PDF only, with no structured export.
+
+Two column layouts, both handled:
 
     Credit card: Transaction Date, Post Date, Description, Category, Type, Amount, Memo
     Checking:    Details, Posting Date, Description, Amount, Type, Balance, Check or Slip #
 
-This is the only source that sees silent merchants. When the goal is "find what
-I forgot about", ask for this rather than working around its absence.
-
-## 3. Plaid MCP — if it ever gets set up
+## 4. Plaid MCP — if it ever gets set up
 
 Check for `mcp__plaid__*` tools in the session. If present, pull transactions
 directly and skip the manual export.
@@ -71,3 +90,21 @@ him toward Plaid unless he wants unattended monitoring.
 - Chase (...4421) and (...8639) — statements only
 - US Bank Home Mortgage — large recurring, not a subscription
 - Rocket Money — the sensor; its own fee is fair game for the audit too
+
+## Not a source: cookie-based Rocket Money MCP servers
+
+A community MCP server (`312-dev/rocketmoney-mcp`) exposes Rocket Money data by
+having the user extract their `tb.auth0.sid` session cookie from a logged-in
+browser tab and paste it into the server.
+
+Do not steer Joel toward this, and push back if it comes up again. A session
+cookie is not a scoped read-only token -- it is his logged-in identity, carrying
+every permission the account has, including management of the Plaid links to his
+bank. Nothing constrains such a server to reading. It also breaks whenever the
+cookie expires and almost certainly violates Rocket Money's terms, which puts
+the bank connections themselves at risk.
+
+Rocket Money has no official API or MCP server as of September 2026. There are
+open feature requests on rocketmoney.canny.io asking for a read-only MCP / Claude
+connector; that is the legitimate path, and voting on them is worth more than
+working around the gap.
