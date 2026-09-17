@@ -1,6 +1,6 @@
 # Subscription Register
 
-Last updated: 2026-09-16 (first audit)
+Last updated: 2026-09-17
 
 Status values: `ACTIVE` (wanted) · `SUSPECT` (possibly unused) · `KILL` (decided,
 not yet cancelled) · `CANCELLED` · `REFUND-PENDING`
@@ -9,11 +9,17 @@ not yet cancelled) · `CANCELLED` · `REFUND-PENDING`
 
 | Merchant | Amount | Cadence | Status | Notes |
 |---|---|---|---|---|
-| Meta / Oculus | unknown | unknown | **KILL** | Unused 6+ months. **No billing email ever sent to this address** — see below. Need line item from Rocket Money. |
-| YouTube Premium | $17.15 | monthly | SUSPECT | Rocket Money flagged a price increase 2026-06-14. Was lower before. Confirm still wanted at new price. |
-| Google Cloud Storage | unknown | monthly | SUSPECT | Renewal reminder 2026-05-25. Likely Google One photo storage. Check tier vs. actual usage. |
+| Meta / Oculus | unknown | unknown | **KILL** | Unused 6+ months. **No billing email ever sent to this address** — see below. Still blocked on line item; needs a Rocket Money CSV export, see below. |
+| YouTube Premium | $17.15 (was $15.00) | monthly | SUSPECT | Confirmed via full thread (2026-06-14): increased $15.00 → $17.15 June 13. Still want it at the new price? |
+| Coinbase One | $4.99 | monthly | SUSPECT | New to the register — surfaced in 2026-09-13 "upcoming bills" email, charges again 2026-09-14. Not previously tracked. Still using it? |
 | Anthropic | unknown | monthly | ACTIVE | Receipts on the 3rd of each month. In use. |
 | Amazon Subscribe & Save | varies | recurring | ACTIVE | DHM electrolyte auto-delivery added 2026-07-29. Gum subscription auto-cancelled 2026-09-15. Consumables, not a trap. |
+| Google Cloud Storage | $21.44 | **annual** (not monthly) | ACTIVE | Corrected 2026-09-17: full thread showed $21.44/yr (~$1.79/mo), not monthly as previously logged. Too small to be worth cancellation friction either way — downgraded off the decision list. |
+
+## Not subscriptions (seen in Rocket Money mail, correctly out of scope)
+
+- Ameriprise investment auto-contribution, $625.00 — recurring ACH debit ("AEIS DEBIT PPD..."), flagged by both the 2026-09-16 large-transaction alert and the 2026-09-13 upcoming-bills email. Investment, not a subscription.
+- American Electric Power, $361.05 — electric utility, charges 2026-09-19.
 
 ## The Meta finding
 
@@ -31,7 +37,9 @@ fee for six-plus months without sending a single renewal notice to the account
 email on file.
 
 **Blocked on:** exact merchant string, amount, and billing date from
-Rocket Money → Recurring.
+Rocket Money → Recurring. Checked `~/Downloads` 2026-09-17 — no export present.
+Gmail can't help here (that's the whole point of this finding), so this is
+strictly waiting on a fresh Rocket Money CSV export.
 
 ## Known accounts
 
