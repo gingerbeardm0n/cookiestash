@@ -45,6 +45,13 @@ show the descriptor pattern `OCULUS *<random-token>`, always card ...5744,
 category Entertainment / Digital games, method "Online, mail or phone". The
 token changes every charge so it can't be used to distinguish Quest+ from
 Horizon from in-app — Meta just doesn't expose that at the card-network level.
+**Correction 2026-09-17 — the "no renewal email" lever is probably wrong.**
+The Meta login page shows the account email as a masked **.edu address**
+(`j*****@h***.edu`), not joel.birdsall@gmail.com. Billing/renewal notices
+almost certainly went there. Gmail finding stands (nothing in gmail) but it
+does not prove Meta never sent notices. Do not claim "no renewal notice" in a
+refund ask unless the .edu inbox is checked and confirmed empty.
+
 Next: cancel both via secure.oculus.com (can't be automated — web-only,
 see cancellation-playbooks.md), then pursue refund on last 1-2 cycles each.
 
