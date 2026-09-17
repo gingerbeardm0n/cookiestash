@@ -9,7 +9,8 @@ not yet cancelled) · `CANCELLED` · `REFUND-PENDING`
 
 | Merchant | Amount | Cadence | Status | Notes |
 |---|---|---|---|---|
-| Meta / Oculus | unknown | unknown | **KILL** | Unused 6+ months. **No billing email ever sent to this address** — see below. Still blocked on line item; needs a Rocket Money CSV export, see below. |
+| Meta / Oculus (A) | $10.79 | monthly (~14th) | **KILL** | Confirmed via Chase mobile app 2026-09-17. Descriptor `OCULUS *<token>`, card ...5744, category Entertainment/Digital games. Most recent: Sep 14, 2026, ref 24692166257400785163241. **No billing email ever sent to this address** — see below. |
+| Meta / Oculus (B) | $8.63 | monthly (~28th) | **KILL** | Second, separate Oculus line item — different amount/cycle day than (A), same generic descriptor. Confirmed 2026-09-17. Most recent: Aug 28, 2026, ref 24692166240404432711774. Same no-email finding applies. |
 | YouTube Premium | $17.15 (was $15.00) | monthly | SUSPECT | Confirmed via full thread (2026-06-14): increased $15.00 → $17.15 June 13. Still want it at the new price? |
 | Coinbase One | $4.99 | monthly | SUSPECT | New to the register — surfaced in 2026-09-13 "upcoming bills" email, charges again 2026-09-14. Not previously tracked. Still using it? |
 | Anthropic | unknown | monthly | ACTIVE | Receipts on the 3rd of each month. In use. |
@@ -36,10 +37,16 @@ It is also the strongest argument in a refund request: Meta charged a recurring
 fee for six-plus months without sending a single renewal notice to the account
 email on file.
 
-**Blocked on:** exact merchant string, amount, and billing date from
-Rocket Money → Recurring. Checked `~/Downloads` 2026-09-17 — no export present.
-Gmail can't help here (that's the whole point of this finding), so this is
-strictly waiting on a fresh Rocket Money CSV export.
+**Unblocked 2026-09-17.** Line items pulled from Joel's Chase mobile app
+transaction history (not Rocket Money — no CSV export was available; Chase
+directly had what was needed). Turns out to be **two** separate recurring
+Oculus charges under one generic descriptor, not one — see table above. Both
+show the descriptor pattern `OCULUS *<random-token>`, always card ...5744,
+category Entertainment / Digital games, method "Online, mail or phone". The
+token changes every charge so it can't be used to distinguish Quest+ from
+Horizon from in-app — Meta just doesn't expose that at the card-network level.
+Next: cancel both via secure.oculus.com (can't be automated — web-only,
+see cancellation-playbooks.md), then pursue refund on last 1-2 cycles each.
 
 ## Known accounts
 
